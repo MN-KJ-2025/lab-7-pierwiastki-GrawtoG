@@ -25,8 +25,18 @@ def roots_20(coef: np.ndarray) -> tuple[np.ndarray, np.ndarray] | None:
             - Wektor miejsc zerowych (m,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
-
+    try:
+        if not isinstance(coef,np.ndarray):
+            return None
+        
+        if len(coef)<=0:
+            return None
+        for i,c in enumerate(coef):
+            coef[i]=np.random.random_sample()*1e-10+c
+        return coef, nppoly.polyroots(coef)
+    except Exception:
+        return None
+    
 
 def frob_a(coef: np.ndarray) -> np.ndarray | None:
     """Funkcja służąca do wyznaczenia macierzy Frobeniusa na podstawie
@@ -48,9 +58,29 @@ def frob_a(coef: np.ndarray) -> np.ndarray | None:
         (np.ndarray): Macierz Frobeniusa o rozmiarze (n,n).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    try:
+        if not isinstance(coef,np.ndarray):
+            return None
+        if len(coef)<=1:
+            return None
+        m=np.zeros([len(coef)-1,len(coef)-1])
+        for i,w in enumerate(m):
+            if i >= len(coef)-1:
+                break
+            w[-1]=-coef[(i)]/coef[-1]
+            if i-1>=0:
+                w[i-1]=1
+            m[i]=w
+        return np.transpose(m)
+    except Exception:
+        return None
+
+print(frob_a(np.asarray([-0.0243451 ,  0.32057148, -1.4536215 ,  2.97211903, -2.81192549,1.])))
 
 
+# [[ 0.        ,  1.        ,  0.        ,  0.        ,  0.        ],
+#        [ 0.        ,  0.        ,  1.       ...   ,  0.        ,  0.        ,  1.        ],
+#        [ 0.0243451 , -0.32057148,  1.4536215 , -2.97211903,  2.81192549]])
 def is_nonsingular(A: np.ndarray) -> bool | None:
     """Funkcja sprawdzająca czy podana macierz NIE JEST singularna. Przy
     implementacji należy pamiętać o definicji zera maszynowego.
